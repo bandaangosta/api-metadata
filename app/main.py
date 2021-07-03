@@ -15,7 +15,6 @@ SQL = """
      FROM "public"."eb_uid_execution_info"
     WHERE "EB_UID" = %s;
 """
-eb_uid = 'uid://A002/Xc384d6/X6c0'
 
 @app.get("/")
 def read_main():
