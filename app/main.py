@@ -10,11 +10,6 @@ DSN = "user={} password={} host={} port={} dbname={}".format(
     credentials.user, credentials.password, credentials.host,
     credentials.port, credentials.dbname
 )
-SQL = """
-   SELECT *
-     FROM "public"."eb_uid_execution_info"
-    WHERE "EB_UID" = %s;
-"""
 
 @app.get("/")
 def read_main():
@@ -22,12 +17,17 @@ def read_main():
 
 @subapi.get("/metadata")
 async def root(uid: str):
+    SQL = """
+       SELECT *
+         FROM "public"."eb_uid_execution_info"
+        WHERE "EB_UID" = %s;
+    """
+    
     with psycopg2.connect(DSN) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
             curs.execute(SQL, [uid])
             _results = curs.fetchall()
-            results = [{k:v for k, v in record.items()} for record in _results]
-            details = curs.description
+            results = [{k:v for k, v in record.items()} for record in _results]            
     return {"data": results}
 
 @subapi.get("/scans")
