@@ -8,7 +8,9 @@ app = FastAPI()
 subapi = FastAPI(
     root_path="/api",
     title="ASDM metadata API",
-    description="Simple REST API for ASDM metadata in ALMA Data Warehouse. Sync'ed with production database every ~1 hour."
+    description="Simple REST API for ASDM metadata in ALMA Data Warehouse. " + \
+                "Intended mainly for analytics and troubleshooting applications. " + \
+                "Sync'ed with production database every ~1 hour."
 )
 
 DSN = "user={} password={} host={} port={} dbname={}".format(

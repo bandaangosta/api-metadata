@@ -1,5 +1,5 @@
 # api-metadata
-Simple REST API for ASDM metadata in ALMA Data Warehouse
+Simple REST API for ASDM metadata in ALMA Data Warehouse. Intended mainly for analytics and troubleshooting applications.
 
 ## Authentication
 
@@ -47,7 +47,7 @@ Visit http://my.server.org:8080/api/docs for API automatically generated documen
           "PHOTONIC_REFERENCE_NAME": "PhotonicReference1",
           "MAIN_ACTIVITY": "PI Observations",
           "ANTENNA_COUNT": 44,
-          "ANTENNA_LIST": "DA57,DA55,DA54,DA52,DA50,DV10,DV11,DV13,DV14,DV15,DV17,DV18,PM02,DV19,   DA49,DA48,DA47,DA46,DA45,DA44,DA43,DA42,PM04,DA41,PM03,DA62,DA61,DA60,DV20,DV22,DV01,  DV23,DV02,DV24,DV03,DV25,DV04,DV05,DV06,DV07,DV08,DV09,DA59,DA58",
+          "ANTENNA_LIST": "DA57,DA55,DA54,DA52,DA50,DV10,DV11,DV13,DV14,DV15,DV17,DV18,PM02,DV19,DA49,DA48,DA47,DA46,DA45,DA44,DA43,DA42,PM04,DA41,PM03,DA62,DA61,DA60,DV20,DV22,DV01,DV23,DV02,DV24,DV03,DV25,DV04,DV05,DV06,DV07,DV08,DV09,DA59,DA58",
           "DA_COUNT": 19,
           "DV_COUNT": 22,
           "PM_COUNT": 3,
