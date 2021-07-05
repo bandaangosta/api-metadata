@@ -22,16 +22,28 @@ async def root(uid: str):
          FROM "public"."eb_uid_execution_info"
         WHERE "EB_UID" = %s;
     """
-    
+
     with psycopg2.connect(DSN) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
             curs.execute(SQL, [uid])
             _results = curs.fetchall()
-            results = [{k:v for k, v in record.items()} for record in _results]            
+            results = [{k:v for k, v in record.items()} for record in _results]
     return {"data": results}
 
 @subapi.get("/scans")
 async def root(uid: str):
-    return {"data": "not implemented"}
+    SQL = """
+       SELECT *
+         FROM "public"."asdm_scan_table"
+        WHERE "eb_uid" = %s;
+    """
+
+    with psycopg2.connect(DSN) as conn:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
+            curs.execute(SQL, [uid])
+            _results = curs.fetchall()
+            results = [{k:v for k, v in record.items()} for record in _results]
+    return {"data": results}
+
 
 app.mount("/api", subapi)
