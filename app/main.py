@@ -4,7 +4,12 @@ import psycopg2.extras
 import credentials
 
 app = FastAPI()
-subapi = FastAPI(root_path="/api")
+
+subapi = FastAPI(
+    root_path="/api",
+    title="ASDM metadata API",
+    description="Simple REST API for ASDM metadata in ALMA Data Warehouse. Sync'ed with production database every ~1 hour."
+)
 
 DSN = "user={} password={} host={} port={} dbname={}".format(
     credentials.user, credentials.password, credentials.host,
@@ -31,7 +36,7 @@ def query_uid(sql_query: str, uid: str):
 async def read_main():
     return {"message": "You are possibly looking for the API. Try with /api or /api/docs"}
 
-@subapi.get("/metadata")
+@subapi.get("/metadata", summary="Get metadata for a given uid")
 async def get_metadata(uid: str):
     SQL = """
        SELECT *
@@ -46,7 +51,7 @@ async def get_metadata(uid: str):
         "errors": data["errors"]
     }
 
-@subapi.get("/scans")
+@subapi.get("/scans", summary="Get list of scans for a given uid")
 async def get_scans(uid: str):
     SQL = """
        SELECT *

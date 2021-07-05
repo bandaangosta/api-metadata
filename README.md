@@ -1,6 +1,10 @@
 # api-metadata
 Simple REST API for ASDM metadata in ALMA Data Warehouse
 
+## Authentication
+
+Copy or rename credentials_sample.py as credentials.py and fill with actual connection data.
+
 ## Development
     make run
 
@@ -10,6 +14,9 @@ Simple REST API for ASDM metadata in ALMA Data Warehouse
     docker run -d --name api-metadata -p 8080:80 api-metadata
 
 ## Endpoints
+
+Visit http://my.server.org:8080/api/docs for API automatically generated documentation.
+
 ### metadata
     curl http://my.server.org:8080/api/metadata?uid=uid://A002/Xc384d6/X6c0
 
