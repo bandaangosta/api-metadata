@@ -11,39 +11,54 @@ DSN = "user={} password={} host={} port={} dbname={}".format(
     credentials.port, credentials.dbname
 )
 
+def query_uid(sql_query: str, uid: str):
+    try:
+        with psycopg2.connect(DSN) as conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
+                curs.execute(sql_query, [uid])
+                _results = curs.fetchall()
+                results = [{k:v for k, v in record.items()} for record in _results]
+        conn.close()
+    except Exception:
+        errors = True
+    else:
+        errors = False
+
+    return {"results": results, "errors": errors}
+
+
 @app.get("/")
-def read_main():
+async def read_main():
     return {"message": "You are possibly looking for the API. Try with /api or /api/docs"}
 
 @subapi.get("/metadata")
-async def root(uid: str):
+async def get_metadata(uid: str):
     SQL = """
        SELECT *
          FROM "public"."eb_uid_execution_info"
         WHERE "EB_UID" = %s;
     """
 
-    with psycopg2.connect(DSN) as conn:
-        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
-            curs.execute(SQL, [uid])
-            _results = curs.fetchall()
-            results = [{k:v for k, v in record.items()} for record in _results]
-    return {"data": results}
+    data = query_uid(SQL, uid)
+
+    return {
+        "data": data["results"],
+        "errors": data["errors"]
+    }
 
 @subapi.get("/scans")
-async def root(uid: str):
+async def get_scans(uid: str):
     SQL = """
        SELECT *
          FROM "public"."asdm_scan_table"
         WHERE "eb_uid" = %s;
     """
 
-    with psycopg2.connect(DSN) as conn:
-        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
-            curs.execute(SQL, [uid])
-            _results = curs.fetchall()
-            results = [{k:v for k, v in record.items()} for record in _results]
-    return {"data": results}
+    data = query_uid(SQL, uid)
 
+    return {
+        "data": data["results"],
+        "errors": data["errors"]
+    }
 
 app.mount("/api", subapi)
