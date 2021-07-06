@@ -1,5 +1,5 @@
 # api-metadata
-Simple REST API for ASDM metadata in ALMA Data Warehouse. Intended mainly for analytics and troubleshooting applications.
+Simple REST API for ASDM execution data in ALMA Data Warehouse. Intended mainly for analytics and troubleshooting applications.
 
 ## Authentication
 
@@ -8,17 +8,17 @@ Copy or rename credentials_sample.py as credentials.py and fill with actual conn
 ## Development
     make run
 
-## Build
+## Deployment with Docker
     docker build -t api-metadata .
 
     docker run -d --name api-metadata -p 8080:80 api-metadata
 
 ## Endpoints
 
-Visit http://my.server.org:8080/api/docs for API automatically generated documentation.
+Visit http://my.server.org:8080/api/v1/docs for API automatically generated documentation.
 
-### metadata
-    curl http://my.server.org:8080/api/metadata?uid=uid://A002/Xc384d6/X6c0
+### execution
+    curl http://my.server.org:8080/api/v1/execution?uid=uid://A002/Xc384d6/X6c0
 
     {
       "data": [
@@ -60,7 +60,7 @@ Visit http://my.server.org:8080/api/docs for API automatically generated documen
 
 
 ### scans
-    curl http://my.server.org:8080/api/scans?uid=uid://A002/Xec9a30/X5d70
+    curl http://my.server.org:8080/api/v1/scans?uid=uid://A002/Xec9a30/X5d70
 
     {
       "data": [

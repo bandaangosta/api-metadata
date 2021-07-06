@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException
+
 import psycopg2
 import psycopg2.extras
 import credentials
@@ -6,19 +9,23 @@ import credentials
 app = FastAPI()
 
 subapi = FastAPI(
-    root_path="/api",
-    title="ASDM metadata API",
-    description="Simple REST API for ASDM metadata in ALMA Data Warehouse. " + \
-                "Intended mainly for analytics and troubleshooting applications. " + \
-                "Sync'ed with production database every ~1 hour."
+    root_path="/api/v1",
+    title="ASDM execution data API",
+    description="Simple REST API for accessing the execution information of a specific ASDM in ALMA Data Warehouse. " + \
+                "<p>Intended mainly for analytics and troubleshooting applications.</p>" + \
+                "<p>Sync'ed with production database every ~1 hour.</p>"
 )
+app.mount("/api/v1", subapi)
 
+# Connection string for data warehouse
 DSN = "user={} password={} host={} port={} dbname={}".format(
     credentials.user, credentials.password, credentials.host,
     credentials.port, credentials.dbname
 )
 
+# Common query handler
 def query_uid(sql_query: str, uid: str):
+    '''Query handler used for all uid-based queries'''
     try:
         with psycopg2.connect(DSN) as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as curs:
@@ -33,13 +40,20 @@ def query_uid(sql_query: str, uid: str):
 
     return {"results": results, "errors": errors}
 
+# Custom error handler
+@subapi.exception_handler(HTTPException)
+async def custom_http_exception_handler(request, exc):
+    return JSONResponse (status_code = 500, content = {"message": "Something went wrong. For correct usage of the API, take a look at /api/v1/docs"})
 
+# Root handlers
 @app.get("/")
+@app.get("/api")
 async def read_main():
-    return {"message": "You are possibly looking for the API. Try with /api or /api/docs"}
+    return {"message": "You are possibly looking for the API. Try with /api/v1 or /api/v1/docs"}
 
-@subapi.get("/metadata", summary="Get metadata for a given uid")
-async def get_metadata(uid: str):
+# Endpoints
+@subapi.get("/execution", summary="Get execution data for a given uid")
+async def get_execution(uid: str):
     SQL = """
        SELECT *
          FROM "public"."eb_uid_execution_info"
@@ -68,4 +82,3 @@ async def get_scans(uid: str):
         "errors": data["errors"]
     }
 
-app.mount("/api", subapi)
